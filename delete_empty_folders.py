@@ -31,7 +31,7 @@ from send2trash import send2trash
 
 logger = logging.getLogger(__name__)
 
-__version__ = "1.2.0"  # Major.Minor.Patch
+__version__ = "1.2.1"  # Major.Minor.Patch
 
 log_buffer = logging.handlers.MemoryHandler(
     capacity=0,
@@ -162,7 +162,7 @@ def main(config: Config):
                     send2trash(dir_path)
                     deleted_dirs_count += 1
                     deleted_dirs_list.append(dir_path)
-                    logger.info("Deleted '%s'", dir_path)
+                    logger.info("Deleted %s", dir_path)
                 except Exception as e:
                     logger.error("Failed to delete '%s': %s", dir_path, e)
                     logger.error("%s", traceback.format_exc())
@@ -239,19 +239,15 @@ class JsonArgsFilter(logging.Filter):
 
     def filter(self, record: logging.LogRecord) -> bool:
         if record.args:
-            # Normalize arguments into a flat list for processing
             raw_args = list(record.args) if isinstance(record.args, tuple) else [record.args]
-            processed_args: list[str] = []
-
+            processed_args = []
             for val in raw_args:
                 if isinstance(val, Path):
-                    processed_args.append(json.dumps(val.as_posix(), default=str))
+                    processed_args.append(json.dumps(val.as_posix()))
                 elif isinstance(val, str):
                     processed_args.append(json.dumps(val))
                 else:
-                    processed_args.append(json.dumps(val, default=str))
-
-            # Cast back to tuple so the logger can unpack it safely
+                    processed_args.append(val)
             record.args = tuple(processed_args)
         return True
 
