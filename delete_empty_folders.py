@@ -31,7 +31,7 @@ from send2trash import send2trash
 
 logger = logging.getLogger(__name__)
 
-__version__ = "1.2.2"  # Major.Minor.Patch
+__version__ = "1.2.3"  # Major.Minor.Patch
 
 log_buffer = logging.handlers.MemoryHandler(
     capacity=0,
@@ -99,13 +99,13 @@ def path_is_ignored(path: str, ignore_these_exact_paths: list[str], any_part_of_
         True if the path should be ignored, False otherwise.
     """
     if path.lower() in (ignore.lower() for ignore in ignore_these_exact_paths):
-        logger.debug("Path is explicitly ignored: %s", path)
+        logger.debug("Path is explicitly ignored")
         return True
     for part in any_part_of_path_to_ignore:
         if part.lower() in path.lower():
-            logger.debug("Path contains ignored part '%s': %s", part, path)
+            logger.debug("Path contains ignored part %s", part)
             return True
-    logger.debug("Path is not ignored: %s", path)
+    logger.debug("Path is not ignored")
     return False
 
 
@@ -120,13 +120,13 @@ def dir_is_empty(path: str) -> bool:
         True if the directory is empty, False otherwise.
     """
     if not os.path.isdir(path):
-        logger.debug("Path is not a directory: %s", path)
+        logger.debug("Path is not a directory")
         return False
     for _, _, files in os.walk(path):
         if files:
-            logger.debug("Directory is not empty: %s", path)
+            logger.debug("Directory is not empty")
             return False
-    logger.debug("Directory is empty: %s", path)
+    logger.debug("Directory is empty")
     return True
 
 
